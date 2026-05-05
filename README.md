@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Class Booking System
 
-## Getting Started
+Full-stack booking system for a private tutor built with Next.js 14 App Router, Supabase, Resend, FullCalendar, Tailwind CSS, and Zod.
 
-First, run the development server:
+## Stack
+
+- Next.js 14 + TypeScript
+- Supabase Postgres, Auth, and Realtime
+- FullCalendar
+- Resend transactional email
+- Tailwind CSS
+- Zod
+
+## Setup
+
+1. Clone the repo.
+2. Create a Supabase project.
+3. Open the Supabase SQL editor and run [`supabase/migrations/001_class_booking_system.sql`](/Users/Amalia/Desktop/C_/clasesBaile/supabase/migrations/001_class_booking_system.sql).
+4. Create `.env.local` with:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+RESEND_API_KEY=
+```
+
+5. Install dependencies:
+
+```bash
+npm install
+```
+
+6. Run the app:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+7. Deploy to Vercel. Add the same environment variables in the Vercel project settings.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Auth Flow
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Professors sign up or log in with email and password on `/login`.
+- On first signup, the app creates a profile row automatically.
+- Protected dashboard routes redirect to `/login` when there is no Supabase session.
 
-## Learn More
+## Routes
 
-To learn more about Next.js, take a look at the following resources:
+- `/login`
+- `/dashboard`
+- `/dashboard/availability`
+- `/dashboard/bookings`
+- `/book/[slug]`
+- `/book/[slug]/confirm`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Notes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Resend uses `onboarding@resend.dev` as the sender by default. Replace it in [`lib/resend.ts`](/Users/Amalia/Desktop/C_/clasesBaile/lib/resend.ts) if you have a verified domain.
+- Public booking depends on the SQL policies in the migration, including public profile lookup by `slug`.
+- This workspace is currently on Node `18.16.1`. Next `14.2.30` requires `18.17.0` or newer, so upgrade Node before local production builds.
