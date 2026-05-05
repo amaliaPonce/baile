@@ -14,6 +14,7 @@ type ProfessorProfile = {
 
 const PROFESSOR_NAME = "Pablo Cabezuelo Fayos";
 const PROFESSOR_SLUG = "pablo-cabezuelo-fayos";
+export const PROFESSOR_NOTIFICATION_EMAIL = "pablo4494@gmail.com";
 
 function slugify(value: string) {
   return value

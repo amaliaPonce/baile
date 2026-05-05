@@ -13,7 +13,7 @@ export const bookingSchema = z.object({
   end_time: z.string().regex(/^\d{2}:\d{2}(:\d{2})?$/),
 });
 
-export const cancelBookingSchema = z.object({
+export const bookingActionSchema = z.object({
   bookingId: z.string().uuid(),
 });
 

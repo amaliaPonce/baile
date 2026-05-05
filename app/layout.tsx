@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Space_Grotesk } from "next/font/google";
 import localFont from "next/font/local";
 
 import "./globals.css";
@@ -15,6 +16,11 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-space-grotesk",
+});
+
 export const metadata: Metadata = {
   title: "Sistema de reservas",
   description: "Sistema de reservas para profesor particular con Supabase y FullCalendar.",
@@ -25,7 +31,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable}`}
+      >
         {children}
       </body>
     </html>

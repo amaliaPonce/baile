@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { startTransition, useEffect, useMemo, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -43,6 +43,7 @@ export default function ProfessorCalendar({
   const [bookings, setBookings] = useState(initialBookings);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [isCancelling, setIsCancelling] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -62,7 +63,9 @@ export default function ProfessorCalendar({
           filter: `professor_id=eq.${professorId}`,
         },
         () => {
-          router.refresh();
+          startTransition(() => {
+            router.refresh();
+          });
         },
       )
       .subscribe();
@@ -118,7 +121,39 @@ export default function ProfessorCalendar({
       ...selectedBooking,
       status: "cancelled",
     });
-    router.refresh();
+    startTransition(() => {
+      router.refresh();
+    });
+  }
+
+  async function handleDeleteBooking() {
+    if (!selectedBooking) {
+      return;
+    }
+
+    setIsDeleting(true);
+
+    const response = await fetch("/api/bookings", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ bookingId: selectedBooking.id }),
+    });
+
+    setIsDeleting(false);
+
+    if (!response.ok) {
+      return;
+    }
+
+    setBookings((currentBookings) =>
+      currentBookings.filter((booking) => booking.id !== selectedBooking.id),
+    );
+    setSelectedBooking(null);
+    startTransition(() => {
+      router.refresh();
+    });
   }
 
   function handleEventClick(info: EventClickArg) {
@@ -220,6 +255,14 @@ export default function ProfessorCalendar({
                   {isCancelling ? "Cancelando..." : "Cancelar reserva"}
                 </button>
               ) : null}
+              <button
+                type="button"
+                onClick={handleDeleteBooking}
+                disabled={isDeleting}
+                className="rounded-full bg-slate-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+              >
+                {isDeleting ? "Eliminando..." : "Eliminar reserva"}
+              </button>
             </div>
           </div>
         </div>

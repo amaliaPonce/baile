@@ -5,8 +5,11 @@ import { NextResponse } from "next/server";
 
 import { sendBookingEmails } from "@/lib/email";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { getSingleProfessorProfile } from "@/lib/professor";
-import { bookingSchema, cancelBookingSchema } from "@/lib/validations";
+import {
+  getSingleProfessorProfile,
+  PROFESSOR_NOTIFICATION_EMAIL,
+} from "@/lib/professor";
+import { bookingActionSchema, bookingSchema } from "@/lib/validations";
 
 function normalizeTime(value: string) {
   return value.slice(0, 5);
@@ -29,12 +32,7 @@ export async function POST(request: Request) {
 
     const dayOfWeek = parseISO(`${payload.date}T00:00:00`).getDay();
 
-    const [
-      { data: availability },
-      { data: existingBooking },
-      { data: professor },
-      professorUser,
-    ] =
+    const [{ data: availability }, { data: existingBooking }, { data: professor }] =
       await Promise.all([
         supabase
           .from("availability_slots")
@@ -59,7 +57,6 @@ export async function POST(request: Request) {
           .select("name")
           .eq("id", payload.professor_id)
           .single(),
-        supabase.auth.admin.getUserById(payload.professor_id),
       ]);
 
     if (!availability) {
@@ -114,7 +111,7 @@ export async function POST(request: Request) {
         studentPhone: payload.student_phone,
         studentDanceStyle: payload.student_dance_style,
         studentLevel: payload.student_level,
-        professorEmail: professorUser.data.user?.email,
+        professorEmail: PROFESSOR_NOTIFICATION_EMAIL,
         professorName: professor?.name ?? "Profesor",
         date: format(
           parseISO(`${payload.date}T00:00:00`),
@@ -150,7 +147,7 @@ export async function PATCH(request: Request) {
     const profile = await getSingleProfessorProfile();
     const supabase = createAdminClient();
     const body = await request.json();
-    const parsed = cancelBookingSchema.safeParse(body);
+    const parsed = bookingActionSchema.safeParse(body);
 
     if (!parsed.success) {
       return NextResponse.json({ error: "ID de reserva no valido." }, { status: 400 });
@@ -159,6 +156,41 @@ export async function PATCH(request: Request) {
     const { error } = await supabase
       .from("bookings")
       .update({ status: "cancelled" })
+      .eq("id", parsed.data.bookingId)
+      .eq("professor_id", profile.id);
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    revalidatePath("/");
+    revalidatePath(`/book/${profile.slug}`);
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/bookings");
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Error inesperado." },
+      { status: 500 },
+    );
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const profile = await getSingleProfessorProfile();
+    const supabase = createAdminClient();
+    const body = await request.json();
+    const parsed = bookingActionSchema.safeParse(body);
+
+    if (!parsed.success) {
+      return NextResponse.json({ error: "ID de reserva no valido." }, { status: 400 });
+    }
+
+    const { error } = await supabase
+      .from("bookings")
+      .delete()
       .eq("id", parsed.data.bookingId)
       .eq("professor_id", profile.id);
 

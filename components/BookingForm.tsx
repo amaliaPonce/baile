@@ -52,7 +52,6 @@ export default function BookingForm({
   const [studentPhone, setStudentPhone] = useState("");
   const [studentDanceStyle, setStudentDanceStyle] = useState("salsa");
   const [studentLevel, setStudentLevel] = useState("iniciacion");
-  const [notes, setNotes] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confirmation, setConfirmation] = useState<Confirmation | null>(null);
@@ -69,6 +68,15 @@ export default function BookingForm({
         { locale: es },
       )
     : "";
+
+  const fieldClassName =
+    "w-full rounded-[22px] border border-cyan-400/25 bg-slate-950/70 px-4 py-3.5 text-sm text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-300 focus:bg-slate-950 focus:shadow-[0_0_0_1px_rgba(34,211,238,0.25),0_0_32px_rgba(34,211,238,0.18)]";
+
+  const sectionEyebrowClassName =
+    "text-[11px] font-semibold uppercase tracking-[0.32em] text-cyan-300/80";
+
+  const sectionTitleClassName =
+    "mt-2 text-lg font-semibold text-white [font-family:var(--font-space-grotesk)]";
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -93,7 +101,7 @@ export default function BookingForm({
         student_phone: studentPhone,
         student_dance_style: studentDanceStyle,
         student_level: studentLevel,
-        notes,
+        notes: "",
         date: selectedSlot.date,
         start_time: selectedSlot.start_time,
         end_time: selectedSlot.end_time,
@@ -118,68 +126,65 @@ export default function BookingForm({
 
   if (confirmation) {
     return (
-      <div className="overflow-hidden rounded-[32px] border border-emerald-200 bg-white shadow-[0_24px_70px_rgba(15,23,42,0.18)]">
-        <div className="bg-gradient-to-r from-emerald-500 to-teal-600 px-6 py-6 text-white sm:px-8">
+      <div className="overflow-hidden rounded-[32px] border border-emerald-300/30 bg-slate-950/95 shadow-[0_0_0_1px_rgba(52,211,153,0.15),0_24px_90px_rgba(8,145,178,0.24)] backdrop-blur">
+        <div className="border-b border-emerald-300/20 bg-[radial-gradient(circle_at_top_left,rgba(16,185,129,0.35),transparent_42%),linear-gradient(135deg,rgba(6,182,212,0.22),rgba(15,23,42,0.98))] px-6 py-6 text-white sm:px-8">
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-emerald-100">
             Reserva completada
           </p>
-          <h2 className="mt-3 text-2xl font-semibold">Reserva confirmada</h2>
-          <p className="mt-2 text-sm text-emerald-50">
+          <h2 className="mt-3 text-2xl font-semibold [font-family:var(--font-space-grotesk)]">
+            Reserva confirmada
+          </h2>
+          <p className="mt-2 text-sm text-emerald-50/90">
             Hemos guardado tu clase y ya tienes el hueco bloqueado.
           </p>
         </div>
 
         <div className="p-6 sm:p-8">
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-slate-300">
             {confirmation.emailError
               ? "La reserva se ha guardado, pero el correo de confirmacion no se pudo enviar todavia."
               : "Recibiras la confirmacion de la clase por correo electronico."}
           </p>
           {confirmation.emailError ? (
-            <p className="mt-2 text-sm text-amber-700">{confirmation.emailError}</p>
+            <p className="mt-2 text-sm text-amber-300">{confirmation.emailError}</p>
           ) : null}
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-2xl bg-slate-50 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <div className="rounded-[24px] border border-white/10 bg-white/5 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-200/70">
                 Profesor
               </p>
-              <p className="mt-2 text-base font-semibold text-slate-950">
+              <p className="mt-2 text-base font-semibold text-white [font-family:var(--font-space-grotesk)]">
                 {professorName}
               </p>
             </div>
-            <div className="rounded-2xl bg-slate-50 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <div className="rounded-[24px] border border-white/10 bg-white/5 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-200/70">
                 Alumno
               </p>
-              <p className="mt-2 text-base font-semibold text-slate-950">
+              <p className="mt-2 text-base font-semibold text-white [font-family:var(--font-space-grotesk)]">
                 {confirmation.studentName}
               </p>
             </div>
-            <div className="rounded-2xl bg-slate-50 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <div className="rounded-[24px] border border-white/10 bg-white/5 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-200/70">
                 Correo
               </p>
-              <p className="mt-2 text-base font-semibold text-slate-950">
+              <p className="mt-2 text-base font-semibold text-white [font-family:var(--font-space-grotesk)]">
                 {confirmation.studentEmail}
               </p>
             </div>
-            <div className="rounded-2xl bg-slate-50 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <div className="rounded-[24px] border border-white/10 bg-white/5 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-200/70">
                 Horario
               </p>
-              <p className="mt-2 text-base font-semibold capitalize text-slate-950">
+              <p className="mt-2 text-base font-semibold capitalize text-white [font-family:var(--font-space-grotesk)]">
                 {selectedSlotLabel}
               </p>
-              <p className="mt-1 text-sm text-slate-600">
+              <p className="mt-1 text-sm text-slate-300">
                 {selectedSlot?.start_time}-{selectedSlot?.end_time}
               </p>
             </div>
-          </div>
-
-          <div className="mt-6 rounded-2xl border border-dashed border-slate-200 px-4 py-4 text-sm text-slate-600">
-            <span className="font-medium text-slate-900">ID de reserva:</span>{" "}
-            {confirmation.bookingId}
           </div>
         </div>
       </div>
@@ -189,34 +194,34 @@ export default function BookingForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="overflow-hidden rounded-[32px] border border-white/70 bg-white/96 shadow-[0_24px_70px_rgba(15,23,42,0.18)] backdrop-blur"
+      className="overflow-hidden rounded-[32px] border border-cyan-400/20 bg-slate-950/82 shadow-[0_0_0_1px_rgba(34,211,238,0.12),0_24px_80px_rgba(6,182,212,0.2)] backdrop-blur-xl"
     >
-      <div className="border-b border-slate-100 bg-gradient-to-br from-white via-teal-50/50 to-sky-50 px-6 py-6 sm:px-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-teal-700">
+      <div className="border-b border-cyan-400/15 bg-[radial-gradient(circle_at_top_right,rgba(163,230,53,0.2),transparent_24%),radial-gradient(circle_at_top_left,rgba(34,211,238,0.22),transparent_32%),linear-gradient(180deg,rgba(15,23,42,0.88),rgba(2,6,23,0.98))] px-6 py-6 sm:px-8">
+        <p className="text-xs font-semibold uppercase tracking-[0.32em] text-cyan-300/85">
           Reserva tu clase
         </p>
         <div className="mt-4 grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
           <div>
-            <h2 className="text-2xl font-semibold tracking-tight text-slate-950">
+            <h2 className="text-2xl font-semibold tracking-tight text-white [font-family:var(--font-space-grotesk)] sm:text-[2rem]">
               Completa tus datos
             </h2>
-            <p className="mt-2 max-w-xl text-sm leading-6 text-slate-600">
+            <p className="mt-2 max-w-xl text-sm leading-6 text-slate-300">
               Elige el horario, dinos tu nivel y deja tus datos para recibir la
               confirmacion al instante.
             </p>
           </div>
 
-          <div className="rounded-[24px] border border-teal-100 bg-white/90 p-4 shadow-sm">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="rounded-[24px] border border-cyan-300/20 bg-white/[0.04] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_0_24px_rgba(34,211,238,0.08)]">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-200/75">
               Resumen
             </p>
-            <p className="mt-3 text-base font-semibold text-slate-950">
+            <p className="mt-3 text-base font-semibold text-white [font-family:var(--font-space-grotesk)]">
               {professorName}
             </p>
-            <p className="mt-2 text-sm capitalize text-slate-600">
+            <p className="mt-2 text-sm capitalize text-slate-300">
               {selectedSlotLabel || "Selecciona un horario"}
             </p>
-            <p className="mt-1 text-sm font-medium text-teal-700">
+            <p className="mt-1 text-sm font-medium text-lime-300">
               {selectedSlot
                 ? `${selectedSlot.start_time}-${selectedSlot.end_time}`
                 : "Sin horario seleccionado"}
@@ -225,27 +230,27 @@ export default function BookingForm({
         </div>
       </div>
 
-      <div className="space-y-8 p-6 sm:p-8">
+      <div className="space-y-8 bg-[linear-gradient(180deg,rgba(15,23,42,0.82),rgba(2,6,23,0.96))] p-6 sm:p-8">
         <section className="space-y-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
+            <p className={sectionEyebrowClassName}>
               Paso 1
             </p>
-            <h3 className="mt-2 text-lg font-semibold text-slate-950">
+            <h3 className={sectionTitleClassName}>
               Elige tu clase
             </h3>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="md:col-span-2">
-              <label className="mb-2 block text-sm font-medium text-slate-700">
+              <label className="mb-2 block text-sm font-medium text-slate-200">
                 Fecha y hora
               </label>
               <select
                 value={selectedSlotValue}
                 onChange={(event) => setSelectedSlotValue(event.target.value)}
                 required
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-slate-900 outline-none ring-teal-500 transition focus:border-teal-300 focus:bg-white focus:ring-2"
+                className={fieldClassName}
               >
                 {slots.length === 0 ? (
                   <option value="">No hay horarios disponibles</option>
@@ -267,13 +272,13 @@ export default function BookingForm({
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">
+              <label className="mb-2 block text-sm font-medium text-slate-200">
                 Estilo
               </label>
               <select
                 value={studentDanceStyle}
                 onChange={(event) => setStudentDanceStyle(event.target.value)}
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-slate-900 outline-none ring-teal-500 transition focus:border-teal-300 focus:bg-white focus:ring-2"
+                className={fieldClassName}
               >
                 <option value="salsa">Salsa</option>
                 <option value="bachata">Bachata</option>
@@ -281,13 +286,13 @@ export default function BookingForm({
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">
+              <label className="mb-2 block text-sm font-medium text-slate-200">
                 Nivel
               </label>
               <select
                 value={studentLevel}
                 onChange={(event) => setStudentLevel(event.target.value)}
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-slate-900 outline-none ring-teal-500 transition focus:border-teal-300 focus:bg-white focus:ring-2"
+                className={fieldClassName}
               >
                 <option value="iniciacion">Iniciacion</option>
                 <option value="intermedio">Intermedio</option>
@@ -299,30 +304,30 @@ export default function BookingForm({
 
         <section className="space-y-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
+            <p className={sectionEyebrowClassName}>
               Paso 2
             </p>
-            <h3 className="mt-2 text-lg font-semibold text-slate-950">
+            <h3 className={sectionTitleClassName}>
               Datos de contacto
             </h3>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="md:col-span-2">
-              <label className="mb-2 block text-sm font-medium text-slate-700">
+              <label className="mb-2 block text-sm font-medium text-slate-200">
                 Nombre completo
               </label>
               <input
                 value={studentName}
                 onChange={(event) => setStudentName(event.target.value)}
                 required
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-slate-900 outline-none ring-teal-500 transition focus:border-teal-300 focus:bg-white focus:ring-2"
+                className={fieldClassName}
                 placeholder="Tu nombre y apellidos"
               />
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">
+              <label className="mb-2 block text-sm font-medium text-slate-200">
                 Telefono
               </label>
               <input
@@ -330,13 +335,13 @@ export default function BookingForm({
                 value={studentPhone}
                 onChange={(event) => setStudentPhone(event.target.value)}
                 required
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-slate-900 outline-none ring-teal-500 transition focus:border-teal-300 focus:bg-white focus:ring-2"
+                className={fieldClassName}
                 placeholder="600 000 000"
               />
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">
+              <label className="mb-2 block text-sm font-medium text-slate-200">
                 Correo electronico
               </label>
               <input
@@ -344,44 +349,15 @@ export default function BookingForm({
                 value={studentEmail}
                 onChange={(event) => setStudentEmail(event.target.value)}
                 required
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-slate-900 outline-none ring-teal-500 transition focus:border-teal-300 focus:bg-white focus:ring-2"
+                className={fieldClassName}
                 placeholder="tu@email.com"
               />
             </div>
           </div>
         </section>
 
-        <section className="space-y-4">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
-              Paso 3
-            </p>
-            <h3 className="mt-2 text-lg font-semibold text-slate-950">
-              Comentarios opcionales
-            </h3>
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700">
-              Comentarios y observaciones
-            </label>
-            <textarea
-              value={notes}
-              onChange={(event) => setNotes(event.target.value)}
-              rows={4}
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-slate-900 outline-none ring-teal-500 transition focus:border-teal-300 focus:bg-white focus:ring-2"
-              placeholder="Cuéntanos si vienes de cero, si prefieres un enfoque concreto o cualquier detalle útil."
-            />
-          </div>
-        </section>
-
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-600">
-          Los campos obligatorios se validan al enviar. Recibiras la confirmacion
-          de tu clase al instante por correo.
-        </div>
-
         {error ? (
-          <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <p className="rounded-[24px] border border-rose-400/25 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
             {error}
           </p>
         ) : null}
@@ -389,7 +365,7 @@ export default function BookingForm({
         <button
           type="submit"
           disabled={isSubmitting || slots.length === 0}
-          className="w-full rounded-full bg-slate-950 px-5 py-4 text-sm font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300"
+          className="w-full rounded-full bg-[linear-gradient(90deg,#22d3ee_0%,#10b981_55%,#a3e635_100%)] px-5 py-4 text-sm font-semibold uppercase tracking-[0.24em] text-slate-950 shadow-[0_0_35px_rgba(34,211,238,0.28)] transition hover:scale-[1.01] hover:shadow-[0_0_45px_rgba(52,211,153,0.34)] disabled:cursor-not-allowed disabled:bg-slate-600 disabled:text-slate-300 disabled:shadow-none"
         >
           {isSubmitting ? "Guardando..." : "Confirmar reserva"}
         </button>
