@@ -69,17 +69,22 @@ export default function BookingForm({
       )
     : "";
 
-  const fieldClassName =
-    "w-full rounded-[22px] border border-cyan-400/25 bg-slate-950/70 px-4 py-3.5 text-sm text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-300 focus:bg-slate-950 focus:shadow-[0_0_0_1px_rgba(34,211,238,0.25),0_0_32px_rgba(34,211,238,0.18)]";
-
-  const sectionEyebrowClassName =
-    "text-[11px] font-semibold uppercase tracking-[0.32em] text-cyan-300/80";
-
-  const sectionTitleClassName =
-    "mt-2 text-lg font-semibold text-white [font-family:var(--font-space-grotesk)]";
+  const fieldClassName = "w-full min-w-0 border border-[#cfc9c5] bg-white px-4 py-3 text-base text-[#141415] min-h-[48px] outline-none placeholder:text-[#78737a] focus:border-[#78668d] focus:ring-1 focus:ring-[#78668d]";
+  const dates = Array.from(new Set(slots.map(slot => slot.date))).sort();
+  const selectedDate = selectedSlot?.date ?? "";
+  const daySlots = slots.filter(slot => slot.date === selectedDate);
+  const slotValue = (slot: Slot) => `${slot.date}|${slot.start_time}|${slot.end_time}`;
+  const labelClass = "mb-2 block text-sm font-medium text-[#423e45]";
+  const stepClass = "text-xs font-semibold uppercase tracking-[0.18em] text-[#78668d]";
+  const headingClass = "mt-2 text-2xl font-semibold tracking-tight [font-family:var(--font-space-grotesk)]";
+  function selectDate(date: string) {
+    const first = slots.find(slot => slot.date === date);
+    if (first) setSelectedSlotValue(slotValue(first));
+  }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (isSubmitting) return;
     setError("");
 
     if (!selectedSlot) {
@@ -89,6 +94,7 @@ export default function BookingForm({
 
     setIsSubmitting(true);
 
+    try {
     const response = await fetch("/api/bookings", {
       method: "POST",
       headers: {
@@ -109,8 +115,6 @@ export default function BookingForm({
     });
 
     const payload = await response.json();
-    setIsSubmitting(false);
-
     if (!response.ok) {
       setError(payload.error ?? "No se pudo crear la reserva.");
       return;
@@ -122,254 +126,77 @@ export default function BookingForm({
       studentEmail,
       emailError: payload.emailError,
     });
+    } catch {
+      setError("No se ha podido comprobar el resultado de la reserva. Contacta con Pablo antes de intentarlo de nuevo.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   if (confirmation) {
     return (
-      <div className="overflow-hidden rounded-[32px] border border-emerald-300/30 bg-slate-950/95 shadow-[0_0_0_1px_rgba(52,211,153,0.15),0_24px_90px_rgba(8,145,178,0.24)] backdrop-blur">
-        <div className="border-b border-emerald-300/20 bg-[radial-gradient(circle_at_top_left,rgba(16,185,129,0.35),transparent_42%),linear-gradient(135deg,rgba(6,182,212,0.22),rgba(15,23,42,0.98))] px-6 py-6 text-white sm:px-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-emerald-100">
-            Reserva completada
-          </p>
-          <h2 className="mt-3 text-2xl font-semibold [font-family:var(--font-space-grotesk)]">
-            Reserva confirmada
-          </h2>
-          <p className="mt-2 text-sm text-emerald-50/90">
-            Hemos guardado tu clase y ya tienes el hueco bloqueado.
-          </p>
+      <div className="border border-[#d7d1cc] bg-white text-[#141415]">
+        <div className="bg-[#141415] p-6 text-[#f5f2ed] sm:p-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#c4b8d1]">✓ Reserva completada</p>
+          <h2 className="mt-4 text-4xl font-bold tracking-[-0.055em] [font-family:var(--font-space-grotesk)]">Nos vemos en la pista.</h2>
+          <p className="mt-3 text-sm text-[#ddd7df]">Tu clase está reservada.</p>
         </div>
-
-        <div className="p-6 sm:p-8">
-          <p className="text-sm text-slate-300">
-            {confirmation.emailError
-              ? "La reserva se ha guardado, pero el correo de confirmacion no se pudo enviar todavia."
-              : "Recibiras la confirmacion de la clase por correo electronico."}
-          </p>
-          {confirmation.emailError ? (
-            <p className="mt-2 text-sm text-amber-300">{confirmation.emailError}</p>
-          ) : null}
-
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-[24px] border border-white/10 bg-white/5 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-200/70">
-                Profesor
-              </p>
-              <p className="mt-2 text-base font-semibold text-white [font-family:var(--font-space-grotesk)]">
-                {professorName}
-              </p>
-            </div>
-            <div className="rounded-[24px] border border-white/10 bg-white/5 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-200/70">
-                Alumno
-              </p>
-              <p className="mt-2 text-base font-semibold text-white [font-family:var(--font-space-grotesk)]">
-                {confirmation.studentName}
-              </p>
-            </div>
-            <div className="rounded-[24px] border border-white/10 bg-white/5 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-200/70">
-                Correo
-              </p>
-              <p className="mt-2 text-base font-semibold text-white [font-family:var(--font-space-grotesk)]">
-                {confirmation.studentEmail}
-              </p>
-            </div>
-            <div className="rounded-[24px] border border-white/10 bg-white/5 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-200/70">
-                Horario
-              </p>
-              <p className="mt-2 text-base font-semibold capitalize text-white [font-family:var(--font-space-grotesk)]">
-                {selectedSlotLabel}
-              </p>
-              <p className="mt-1 text-sm text-slate-300">
-                {selectedSlot?.start_time}-{selectedSlot?.end_time}
-              </p>
-            </div>
-          </div>
+        <div className="space-y-6 p-6 sm:p-8">
+          <p className="text-sm" role="status">{confirmation.emailError ? "La reserva se ha guardado, pero no se ha podido enviar el correo de confirmación." : "Recibirás la confirmación de tu clase por correo electrónico."}</p>
+          {confirmation.emailError ? <p className="text-sm text-[#8a4e25]">{confirmation.emailError}</p> : null}
+          <dl className="grid gap-4 border-y border-[#d7d1cc] py-5 sm:grid-cols-2">
+            <div><dt className={stepClass}>Profesor</dt><dd className="mt-2 font-medium">{professorName}</dd></div>
+            <div><dt className={stepClass}>Alumno</dt><dd className="mt-2 break-words font-medium">{confirmation.studentName}</dd></div>
+            <div><dt className={stepClass}>Correo</dt><dd className="mt-2 break-all text-sm">{confirmation.studentEmail}</dd></div>
+            <div><dt className={stepClass}>Horario</dt><dd className="mt-2 capitalize">{selectedSlotLabel}<br/>{selectedSlot?.start_time.slice(0,5)} – {selectedSlot?.end_time.slice(0,5)}</dd></div>
+          </dl>
+          <a href="/" className="inline-flex border-b border-[#141415] pb-1 text-sm font-medium">Volver al portfolio ↗</a>
         </div>
       </div>
     );
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="overflow-hidden rounded-[32px] border border-cyan-400/20 bg-slate-950/82 shadow-[0_0_0_1px_rgba(34,211,238,0.12),0_24px_80px_rgba(6,182,212,0.2)] backdrop-blur-xl"
-    >
-      <div className="border-b border-cyan-400/15 bg-[radial-gradient(circle_at_top_right,rgba(163,230,53,0.2),transparent_24%),radial-gradient(circle_at_top_left,rgba(34,211,238,0.22),transparent_32%),linear-gradient(180deg,rgba(15,23,42,0.88),rgba(2,6,23,0.98))] px-6 py-6 sm:px-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.32em] text-cyan-300/85">
-          Reserva tu clase
-        </p>
-        <div className="mt-4 grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
-          <div>
-            <h2 className="text-2xl font-semibold tracking-tight text-white [font-family:var(--font-space-grotesk)] sm:text-[2rem]">
-              Completa tus datos
-            </h2>
-            <p className="mt-2 max-w-xl text-sm leading-6 text-slate-300">
-              Elige el horario, dinos tu nivel y deja tus datos para recibir la
-              confirmacion al instante.
-            </p>
-          </div>
-
-          <div className="rounded-[24px] border border-cyan-300/20 bg-white/[0.04] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_0_24px_rgba(34,211,238,0.08)]">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-200/75">
-              Resumen
-            </p>
-            <p className="mt-3 text-base font-semibold text-white [font-family:var(--font-space-grotesk)]">
-              {professorName}
-            </p>
-            <p className="mt-2 text-sm capitalize text-slate-300">
-              {selectedSlotLabel || "Selecciona un horario"}
-            </p>
-            <p className="mt-1 text-sm font-medium text-lime-300">
-              {selectedSlot
-                ? `${selectedSlot.start_time}-${selectedSlot.end_time}`
-                : "Sin horario seleccionado"}
-            </p>
-          </div>
-        </div>
+    <form onSubmit={handleSubmit} className="min-w-0 border border-[#d7d1cc] bg-white text-[#141415]">
+      <div className="bg-[#141415] p-6 text-[#f5f2ed] sm:p-8">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#c4b8d1]">PCF / RESERVAS</p>
+        <h2 className="mt-4 text-3xl font-bold tracking-[-0.055em] [font-family:var(--font-space-grotesk)] sm:text-4xl">Tu próxima clase<span className="text-[#b8a6c9]">.</span></h2>
+        <p className="mt-3 text-sm leading-relaxed text-[#ddd7df]">Elige un horario disponible y completa tus datos.</p>
       </div>
-
-      <div className="space-y-8 bg-[linear-gradient(180deg,rgba(15,23,42,0.82),rgba(2,6,23,0.96))] p-6 sm:p-8">
+      <fieldset disabled={isSubmitting} className="min-w-0 space-y-7 border-0 p-4 sm:space-y-8 sm:p-8">
         <section className="space-y-4">
-          <div>
-            <p className={sectionEyebrowClassName}>
-              Paso 1
-            </p>
-            <h3 className={sectionTitleClassName}>
-              Elige tu clase
-            </h3>
+          <div><p className={stepClass}>01 / Disponibilidad</p><h3 className={headingClass}>Elige fecha y hora</h3></div>
+          <div className="flex max-w-full snap-x gap-2 overflow-x-auto overscroll-x-contain pb-2" role="group" aria-label="Fechas disponibles">
+            {dates.map(date => {
+              const day = new Date(`${date}T12:00:00`);
+              return <button key={date} type="button" aria-pressed={selectedDate === date} onClick={() => selectDate(date)} className={`min-w-[76px] shrink-0 snap-start border px-3 py-3 text-center transition-colors ${selectedDate === date ? "border-[#141415] bg-[#141415] text-white" : "border-[#d7d1cc] bg-[#f5f2ed] hover:border-[#78668d]"}`}><span className="block text-xs capitalize">{format(day,"EEE",{locale:es})}</span><span className="block text-2xl font-semibold">{format(day,"d")}</span><span className="block text-xs capitalize">{format(day,"MMM",{locale:es})}</span></button>;
+            })}
           </div>
-
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="md:col-span-2">
-              <label className="mb-2 block text-sm font-medium text-slate-200">
-                Fecha y hora
-              </label>
-              <select
-                value={selectedSlotValue}
-                onChange={(event) => setSelectedSlotValue(event.target.value)}
-                required
-                className={fieldClassName}
-              >
-                {slots.length === 0 ? (
-                  <option value="">No hay horarios disponibles</option>
-                ) : null}
-                {slots.map((slot) => {
-                  const value = `${slot.date}|${slot.start_time}|${slot.end_time}`;
-
-                  return (
-                    <option key={value} value={value}>
-                      {`${format(
-                        new Date(`${slot.date}T${slot.start_time}`),
-                        "EEEE, d 'de' MMMM",
-                        { locale: es },
-                      )} • ${slot.start_time}-${slot.end_time}`}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-200">
-                Estilo
-              </label>
-              <select
-                value={studentDanceStyle}
-                onChange={(event) => setStudentDanceStyle(event.target.value)}
-                className={fieldClassName}
-              >
-                <option value="salsa">Salsa</option>
-                <option value="bachata">Bachata</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-200">
-                Nivel
-              </label>
-              <select
-                value={studentLevel}
-                onChange={(event) => setStudentLevel(event.target.value)}
-                className={fieldClassName}
-              >
-                <option value="iniciacion">Iniciacion</option>
-                <option value="intermedio">Intermedio</option>
-                <option value="avanzado">Avanzado</option>
-              </select>
-            </div>
+          <label htmlFor="pcf-date" className={labelClass}>Fecha disponible</label>
+          <select id="pcf-date" className={fieldClassName} value={selectedDate} onChange={e => selectDate(e.target.value)} required>{dates.map(date => <option key={date} value={date}>{format(new Date(`${date}T12:00:00`),"EEEE, d 'de' MMMM 'de' yyyy",{locale:es})}</option>)}</select>
+          <div role="group" aria-label="Horarios disponibles" className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            {daySlots.map(slot => <button key={slotValue(slot)} type="button" aria-pressed={selectedSlotValue === slotValue(slot)} onClick={() => setSelectedSlotValue(slotValue(slot))} className={`min-h-[48px] border px-2 py-3 text-center text-sm font-medium transition-colors ${selectedSlotValue === slotValue(slot) ? "border-[#78668d] bg-[#e8e0ee] text-[#30283c]" : "border-[#d7d1cc] hover:border-[#78668d]"}`}>{slot.start_time.slice(0,5)} – {slot.end_time.slice(0,5)}</button>)}
+          </div>
+          <div aria-live="polite" className="border-l-2 border-[#78668d] bg-[#f5f2ed] px-4 py-3 text-sm"><span className="block text-xs font-medium uppercase tracking-widest text-[#68636b]">Tu horario</span><span className="mt-1 block capitalize">{selectedSlotLabel || "Selecciona un horario"}{selectedSlot ? ` · ${selectedSlot.start_time.slice(0,5)} – ${selectedSlot.end_time.slice(0,5)}` : ""}</span></div>
+        </section>
+        <section className="space-y-4 border-t border-[#d7d1cc] pt-6">
+          <div><p className={stepClass}>02 / La clase</p><h3 className={headingClass}>¿Qué quieres bailar?</h3></div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div><label htmlFor="pcf-style" className={labelClass}>Estilo</label><select id="pcf-style" value={studentDanceStyle} onChange={e=>setStudentDanceStyle(e.target.value)} className={fieldClassName}><option value="salsa">Salsa</option><option value="bachata">Bachata</option></select></div>
+            <div><label htmlFor="pcf-level" className={labelClass}>Nivel</label><select id="pcf-level" value={studentLevel} onChange={e=>setStudentLevel(e.target.value)} className={fieldClassName}><option value="iniciacion">Iniciación</option><option value="intermedio">Intermedio</option><option value="avanzado">Avanzado</option></select></div>
           </div>
         </section>
-
-        <section className="space-y-4">
-          <div>
-            <p className={sectionEyebrowClassName}>
-              Paso 2
-            </p>
-            <h3 className={sectionTitleClassName}>
-              Datos de contacto
-            </h3>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="md:col-span-2">
-              <label className="mb-2 block text-sm font-medium text-slate-200">
-                Nombre completo
-              </label>
-              <input
-                value={studentName}
-                onChange={(event) => setStudentName(event.target.value)}
-                required
-                className={fieldClassName}
-                placeholder="Tu nombre y apellidos"
-              />
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-200">
-                Telefono
-              </label>
-              <input
-                type="tel"
-                value={studentPhone}
-                onChange={(event) => setStudentPhone(event.target.value)}
-                required
-                className={fieldClassName}
-                placeholder="600 000 000"
-              />
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-200">
-                Correo electronico
-              </label>
-              <input
-                type="email"
-                value={studentEmail}
-                onChange={(event) => setStudentEmail(event.target.value)}
-                required
-                className={fieldClassName}
-                placeholder="tu@email.com"
-              />
-            </div>
+        <section className="space-y-4 border-t border-[#d7d1cc] pt-6">
+          <div><p className={stepClass}>03 / Contacto</p><h3 className={headingClass}>Tus datos</h3></div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="sm:col-span-2"><label htmlFor="pcf-name" className={labelClass}>Nombre completo</label><input id="pcf-name" autoComplete="name" required value={studentName} onChange={e=>setStudentName(e.target.value)} className={fieldClassName} placeholder="Tu nombre y apellidos"/></div>
+            <div><label htmlFor="pcf-phone" className={labelClass}>Teléfono</label><input id="pcf-phone" type="tel" autoComplete="tel" required value={studentPhone} onChange={e=>setStudentPhone(e.target.value)} className={fieldClassName} placeholder="600 000 000"/></div>
+            <div><label htmlFor="pcf-email" className={labelClass}>Correo electrónico</label><input id="pcf-email" type="email" autoComplete="email" required value={studentEmail} onChange={e=>setStudentEmail(e.target.value)} className={fieldClassName} placeholder="tu@email.com"/></div>
           </div>
         </section>
-
-        {error ? (
-          <p className="rounded-[24px] border border-rose-400/25 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
-            {error}
-          </p>
-        ) : null}
-
-        <button
-          type="submit"
-          disabled={isSubmitting || slots.length === 0}
-          className="w-full rounded-full bg-[linear-gradient(90deg,#22d3ee_0%,#10b981_55%,#a3e635_100%)] px-5 py-4 text-sm font-semibold uppercase tracking-[0.24em] text-slate-950 shadow-[0_0_35px_rgba(34,211,238,0.28)] transition hover:scale-[1.01] hover:shadow-[0_0_45px_rgba(52,211,153,0.34)] disabled:cursor-not-allowed disabled:bg-slate-600 disabled:text-slate-300 disabled:shadow-none"
-        >
-          {isSubmitting ? "Guardando..." : "Confirmar reserva"}
-        </button>
-      </div>
+        {error ? <p role="alert" className="border border-[#d9a6a6] bg-[#fdf0f0] p-3 text-sm text-[#8b2e2e]">{error}</p> : null}
+        <div><button type="submit" disabled={isSubmitting || !selectedSlot} className="flex w-full items-center justify-between gap-4 min-h-[52px] bg-[#141415] px-5 py-4 text-left text-base font-semibold text-white transition-colors hover:bg-[#423b49] disabled:cursor-not-allowed disabled:opacity-50"><span>{isSubmitting ? "Guardando…" : "Confirmar reserva"}</span><span aria-hidden="true">↗</span></button><p className="mt-3 text-xs leading-relaxed text-[#68636b]">Recibirás los detalles de tu reserva por correo electrónico.</p></div>
+      </fieldset>
     </form>
   );
 }

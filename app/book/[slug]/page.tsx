@@ -28,68 +28,35 @@ export default async function PublicBookingPage({
   const slots = await generateAvailableSlots(profile.id);
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.14),transparent_24%),radial-gradient(circle_at_top_right,rgba(163,230,53,0.12),transparent_20%),linear-gradient(180deg,#020617_0%,#020817_48%,#04111f_100%)] px-4 py-10 sm:px-6 lg:px-8">
-      <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.95fr_1.05fr]">
-        <section className="relative flex flex-col justify-center overflow-hidden rounded-[36px] border border-cyan-400/15 bg-white/[0.03] p-8 text-white shadow-[0_0_0_1px_rgba(34,211,238,0.08),0_24px_80px_rgba(6,182,212,0.12)] backdrop-blur md:p-10">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.16),transparent_26%),radial-gradient(circle_at_bottom_right,rgba(163,230,53,0.12),transparent_24%)]" />
-
-          <div className="relative">
-            <h1 className="max-w-lg text-4xl font-semibold leading-tight tracking-tight text-white [font-family:var(--font-space-grotesk)] sm:text-5xl">
-              Clases de baile privadas
-            </h1>
-
-            <p className="mt-4 text-sm font-semibold uppercase tracking-[0.28em] text-cyan-200/80">
-              {profile.name}
-            </p>
-
-            <p className="mt-5 max-w-xl text-base leading-7 text-slate-300">
-              {profile.bio ||
-                "Una reserva directa, visual y clara para cerrar tu proxima clase sin intercambios eternos de mensajes."}
-            </p>
-
-            <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              <div className="rounded-[24px] border border-white/10 bg-white/[0.04] p-4">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-cyan-200/75">
-                  Profesor
-                </p>
-                <p className="mt-3 text-base font-semibold text-white [font-family:var(--font-space-grotesk)]">
-                  {profile.name}
-                </p>
-              </div>
-
-              <div className="rounded-[24px] border border-white/10 bg-white/[0.04] p-4">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-cyan-200/75">
-                  Duracion
-                </p>
-                <p className="mt-3 text-base font-semibold text-white [font-family:var(--font-space-grotesk)]">
-                  {profile.session_duration_minutes} min
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-8 rounded-[28px] border border-lime-300/15 bg-lime-300/[0.05] px-5 py-4 text-sm text-slate-300">
-              Elige horario, deja tus datos y bloquea tu plaza.
-            </div>
+    <main className="min-h-screen bg-[#f5f2ed] text-[#141415]">
+      <header className="flex flex-wrap items-center justify-between gap-4 border-b border-white/15 bg-[#141415] px-[5%] py-5 text-[#f5f2ed]">
+        <a href="/" aria-label="Volver a la web de Pablo" className="text-[34px] font-black leading-none tracking-[-0.09em]">PC<span className="text-[#b8a6c9]">F.</span></a>
+        <nav aria-label="Navegación" className="flex flex-wrap items-center gap-3 text-sm sm:gap-5"><a href="/#sobre-mi">Pablo</a><a href="/#videos">Vídeos</a><a href="https://www.instagram.com/pablocf_dancer/" target="_blank" rel="noopener noreferrer" className="hidden sm:inline">@pablocf_dancer ↗</a><a href="/" className="inline-flex min-h-[44px] items-center border border-white/40 px-4 py-2">Volver ↗</a></nav>
+      </header>
+      <div className="mx-auto grid max-w-[1440px] items-start gap-7 px-[5%] py-7 sm:gap-10 sm:py-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16 lg:py-20">
+        <section className="min-w-0 lg:sticky lg:top-8">
+          <p className="text-xs font-semibold tracking-[0.18em]">PCF / CLASES PARTICULARES</p>
+          <h1 className="mt-4 text-[clamp(3rem,7vw,7rem)] font-bold leading-[0.93] tracking-[-0.075em] [font-family:var(--font-space-grotesk)]">¿Bailamos<span className="text-[#78668d]">?</span></h1>
+          <p className="mt-4 max-w-md text-base leading-relaxed sm:text-lg">{profile.bio || "Reserva una clase particular conmigo. Elige un horario, cuéntame qué quieres trabajar y nos vemos en la pista."}</p>
+          <div className="mt-5 grid grid-cols-2 gap-4 border-y border-[#141415]/20 py-4 text-sm sm:mt-8 sm:py-5">
+            <div><p className="text-xs uppercase tracking-widest text-[#68636b]">Profesor</p><p className="mt-2 font-semibold">{profile.name}</p></div>
+            {profile.session_duration_minutes ? <div><p className="text-xs uppercase tracking-widest text-[#68636b]">Duración</p><p className="mt-2 font-semibold">{profile.session_duration_minutes} min</p></div> : null}
           </div>
+          <div className="mt-8 hidden aspect-[4/3] overflow-hidden bg-[#242328] lg:block">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="https://drive.google.com/thumbnail?id=1DIVT-RyAHihS1bm8aA2addoUDIdfYCE4&sz=w1200" alt="Fotograma del portfolio de Pablo" loading="lazy" className="h-full w-full object-cover object-center"/>
+          </div>
+          <a href="https://www.instagram.com/pablocf_dancer/" target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex min-h-[44px] items-center border-b border-[#141415] pb-1 text-sm">¿Tienes dudas? Escríbeme por Instagram ↗</a>
         </section>
-
-        <section>
+        <section className="min-w-0">
           {slots.length > 0 ? (
-            <BookingForm
-              professorId={profile.id}
-              professorName={profile.name}
-              slots={slots}
-              initialDate={searchParams.date}
-              initialStartTime={searchParams.start}
-              initialEndTime={searchParams.end}
-            />
+            <BookingForm professorId={profile.id} professorName={profile.name} slots={slots} initialDate={searchParams.date} initialStartTime={searchParams.start} initialEndTime={searchParams.end}/>
           ) : (
-            <div className="rounded-xl border border-slate-800 bg-white p-8 text-sm text-slate-500 shadow-sm">
-              No hay horarios disponibles en este momento.
-            </div>
+            <div className="border border-[#d7d1cc] bg-white p-8"><h2 className="text-2xl font-semibold">No hay horarios disponibles</h2><p className="mt-3 text-sm text-[#68636b]">Consulta más adelante o contacta conmigo por Instagram.</p></div>
           )}
         </section>
       </div>
+      <footer className="flex flex-wrap justify-between gap-4 bg-[#141415] px-[5%] py-6 text-sm text-[#f5f2ed]"><a href="/">PCF. / Volver al portfolio ↑</a><a href="https://www.instagram.com/pablocf_dancer/" target="_blank" rel="noopener noreferrer">@pablocf_dancer ↗</a></footer>
     </main>
   );
 }
