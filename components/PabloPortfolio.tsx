@@ -64,7 +64,11 @@ export default function PabloPortfolio({ bookingHref }: { bookingHref: string })
     </section>
     <section className={styles.intro} id="sobre-mi">
       <div className={styles.introText}><span className={styles.kicker}>PABLO CF</span><h2>Hola,<br/>soy Pablo<span>.</span></h2><p>Bailarín y profesor. Aquí puedes ver mi trabajo, encontrarme en redes y reservar una clase particular de baile conmigo.</p><Instagram className={styles.social}/></div>
-      <div className={styles.portrait}><Media id="1b5cgc-I-XjFuW4Qas3obif9GyNlq0INw"/><span>PCF / DANCER</span></div>
+      <div className={styles.portrait} style={{transform:"none",width:"100%",maxWidth:500,marginInline:"auto",aspectRatio:"3/4"}}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/api/portfolio-portrait" alt="Retrato editorial en blanco y negro de Pablo Cabezuelo" width={1086} height={1448} loading="lazy" style={{display:"block",width:"100%",height:"100%",objectFit:"contain",objectPosition:"center",background:"transparent"}} onError={e => { const fallback = thumb("1AHwm54JqU7X4d-hWYUADCGAhSlAjt16Z",1200); if (e.currentTarget.src !== fallback) e.currentTarget.src = fallback; }}/>
+        <span>PCF / DANCER</span>
+      </div>
     </section>
     <section className={styles.feature} id="videos">
       <div className={styles.sectionHead}><div><span className={styles.kicker}>VÍDEOS</span><h2>En la pista<span>.</span></h2></div><p>El baile se entiende mejor viéndolo.</p></div>
