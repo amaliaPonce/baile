@@ -1,15 +1,11 @@
-import { redirect } from "next/navigation";
+import type { Metadata } from "next";
+import PabloPortfolio from "@/components/PabloPortfolio";
 
-import SetupNotice from "@/components/SetupNotice";
-import { getMissingSetupEnv, hasPublicSupabaseEnv } from "@/lib/env";
-import { getSingleProfessorProfile } from "@/lib/professor";
+export const metadata: Metadata = {
+  title: "Pablo CF | Bachata y clases de baile",
+  description: "Portfolio de Pablo CF, vídeos de baile y reserva de clases particulares.",
+};
 
-export default async function HomePage() {
-  if (!hasPublicSupabaseEnv()) {
-    return <SetupNotice missing={getMissingSetupEnv()} />;
-  }
-
-  const profile = await getSingleProfessorProfile();
-
-  redirect(`/book/${profile.slug}`);
+export default function HomePage() {
+  return <PabloPortfolio bookingHref="/clases" />;
 }
