@@ -31,22 +31,22 @@ export default async function PublicBookingPage({
     <main className="min-h-screen bg-[#f5f2ed] text-[#141415]">
       <header className="flex flex-wrap items-center justify-between gap-4 border-b border-white/15 bg-[#141415] px-[5%] py-5 text-[#f5f2ed]">
         <a href="/" aria-label="Volver a la web de Pablo" className="text-[34px] font-black leading-none tracking-[-0.09em]">PC<span className="text-[#b8a6c9]">F.</span></a>
-        <nav aria-label="Navegación" className="flex flex-wrap items-center gap-5 text-sm"><a href="/#sobre-mi">Pablo</a><a href="/#videos">Vídeos</a><a href="https://www.instagram.com/pablocf_dancer/" target="_blank" rel="noopener noreferrer" className="hidden sm:inline">@pablocf_dancer ↗</a><a href="/" className="border border-white/40 px-4 py-2">Volver ↗</a></nav>
+        <nav aria-label="Navegación" className="flex flex-wrap items-center gap-3 text-sm sm:gap-5"><a href="/#sobre-mi">Pablo</a><a href="/#videos">Vídeos</a><a href="https://www.instagram.com/pablocf_dancer/" target="_blank" rel="noopener noreferrer" className="hidden sm:inline">@pablocf_dancer ↗</a><a href="/" className="inline-flex min-h-[44px] items-center border border-white/40 px-4 py-2">Volver ↗</a></nav>
       </header>
-      <div className="mx-auto grid max-w-[1440px] items-start gap-10 px-[5%] py-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16 lg:py-20">
+      <div className="mx-auto grid max-w-[1440px] items-start gap-7 px-[5%] py-7 sm:gap-10 sm:py-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16 lg:py-20">
         <section className="min-w-0 lg:sticky lg:top-8">
           <p className="text-xs font-semibold tracking-[0.18em]">PCF / CLASES PARTICULARES</p>
-          <h1 className="mt-6 text-[clamp(3rem,7vw,7rem)] font-bold leading-[0.93] tracking-[-0.075em] [font-family:var(--font-space-grotesk)]">¿Bailamos<span className="text-[#78668d]">?</span></h1>
-          <p className="mt-6 max-w-md text-lg leading-relaxed">{profile.bio || "Reserva una clase particular conmigo. Elige un horario, cuéntame qué quieres trabajar y nos vemos en la pista."}</p>
-          <div className="mt-8 grid grid-cols-2 gap-4 border-y border-[#141415]/20 py-5 text-sm">
+          <h1 className="mt-4 text-[clamp(3rem,7vw,7rem)] font-bold leading-[0.93] tracking-[-0.075em] [font-family:var(--font-space-grotesk)]">¿Bailamos<span className="text-[#78668d]">?</span></h1>
+          <p className="mt-4 max-w-md text-base leading-relaxed sm:text-lg">{profile.bio || "Reserva una clase particular conmigo. Elige un horario, cuéntame qué quieres trabajar y nos vemos en la pista."}</p>
+          <div className="mt-5 grid grid-cols-2 gap-4 border-y border-[#141415]/20 py-4 text-sm sm:mt-8 sm:py-5">
             <div><p className="text-xs uppercase tracking-widest text-[#68636b]">Profesor</p><p className="mt-2 font-semibold">{profile.name}</p></div>
             {profile.session_duration_minutes ? <div><p className="text-xs uppercase tracking-widest text-[#68636b]">Duración</p><p className="mt-2 font-semibold">{profile.session_duration_minutes} min</p></div> : null}
           </div>
-          <div className="mt-8 aspect-[4/3] overflow-hidden bg-[#242328]">
+          <div className="mt-8 hidden aspect-[4/3] overflow-hidden bg-[#242328] lg:block">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="https://drive.google.com/thumbnail?id=1DIVT-RyAHihS1bm8aA2addoUDIdfYCE4&sz=w1200" alt="Fotograma del portfolio de Pablo" className="h-full w-full object-cover object-center"/>
+            <img src="https://drive.google.com/thumbnail?id=1DIVT-RyAHihS1bm8aA2addoUDIdfYCE4&sz=w1200" alt="Fotograma del portfolio de Pablo" loading="lazy" className="h-full w-full object-cover object-center"/>
           </div>
-          <a href="https://www.instagram.com/pablocf_dancer/" target="_blank" rel="noopener noreferrer" className="mt-5 inline-block border-b border-[#141415] pb-1 text-sm">¿Tienes dudas? Escríbeme por Instagram ↗</a>
+          <a href="https://www.instagram.com/pablocf_dancer/" target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex min-h-[44px] items-center border-b border-[#141415] pb-1 text-sm">¿Tienes dudas? Escríbeme por Instagram ↗</a>
         </section>
         <section className="min-w-0">
           {slots.length > 0 ? (
