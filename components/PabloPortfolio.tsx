@@ -20,14 +20,18 @@ function Media({ id, eager = false }: { id: string; eager?: boolean }) {
 }
 
 function InlinePlayer({ index, onClose }: { index: number; onClose: () => void }) {
+  const [source, setSource] = useState<"direct" | "relay" | "unavailable" | "preview">("direct");
+  const id = videos[index];
   return <div className={styles.inlinePlayer}>
-    <iframe title={`Vídeo de baile ${index+1}`} src={`https://drive.google.com/file/d/${videos[index]}/preview`} allow="autoplay; fullscreen" allowFullScreen />
+    {source === "preview" ? <iframe title={`Vídeo de baile ${index+1}`} src={`https://drive.google.com/file/d/${id}/preview`} allow="autoplay; fullscreen" allowFullScreen /> :
+      source === "unavailable" ? <div className={styles.videoMessage} role="status"><p>Este vídeo no ha podido cargar directamente.</p><button type="button" onClick={() => setSource("preview")}>Usar reproductor alternativo</button><button type="button" onClick={() => setSource("direct")}>Reintentar</button></div> :
+      <video key={source} src={source === "direct" ? `https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t` : `/api/portfolio-video/${index}`} poster={thumb(id,640)} autoPlay playsInline controls preload="metadata" aria-label={`Vídeo de baile ${index+1}`} onError={() => setSource(v => v === "direct" ? "relay" : "unavailable")} />}
     <button type="button" className={styles.stopVideo} onClick={onClose} aria-label="Cerrar vídeo y volver a la portada">×</button>
   </div>;
 }
 
 function Clip({ index, large = false, active, onPlay, onClose }: { index: number; large?: boolean; active: boolean; onPlay: () => void; onClose: () => void }) {
-  return <div className={large ? styles.featureClip : styles.clip}>
+  return <div className={`${large ? styles.featureClip : styles.clip} ${active ? styles.activeClip : ""}`}>
     {active ? <InlinePlayer index={index} onClose={onClose}/> : <button type="button" className={styles.clipButton} onClick={onPlay} aria-label={`Reproducir vídeo ${index+1}`}>
       <Media id={videos[index]} />
       <span className={styles.clipIndex}>{String(index+1).padStart(2,"0")}</span>
@@ -44,7 +48,7 @@ export default function PabloPortfolio({ bookingHref }: { bookingHref: string })
   return <main className={styles.site} id="inicio">
     <header className={styles.nav}>
       <a href="#inicio" className={styles.brand}>PC<span>F.</span></a>
-      <nav aria-label="Navegación principal"><a href="#sobre-mi">Pablo</a><a href="#videos">Vídeos</a><a href="#clases">Clases</a></nav>
+      <nav aria-label="Navegación principal"><a href="#sobre-mi">Pablo</a><a href="#videos">Vídeos</a><a href="#redes">Redes</a><a href="#clases">Clases</a></nav>
       <Instagram className={styles.navSocial}/>
       <a className={styles.navBook} href={bookingHref}>Reserva <span>↗</span></a>
     </header>
@@ -76,6 +80,7 @@ export default function PabloPortfolio({ bookingHref }: { bookingHref: string })
       <div className={styles.classPhoto}>{selected === "classes" ? <InlinePlayer index={10} onClose={close}/> : <><Media id={videos[10]}/><button type="button" onClick={() => setSelected("classes")} className={styles.watch}><span>▶</span> Ver vídeo</button></>}</div>
       <div className={styles.classText}><span className={styles.kicker}>CLASES PARTICULARES</span><h2>¿Bailamos<span>?</span></h2><p>Si quieres aprender bachata o seguir mejorando, puedes consultar mis horarios y reservar una clase particular directamente desde aquí.</p><a className={styles.book} href={bookingHref}>Consultar horarios <span>↗</span></a><a className={styles.textButton} href={instagram} target="_blank" rel="noopener noreferrer">¿Tienes dudas? Escríbeme por Instagram ↗</a></div>
     </section>
+    <div className={styles.mobileBar}><Instagram className={styles.mobileSocial}/><a href={bookingHref} className={styles.mobileBook}>Reservar clase <span>↗</span></a></div>
     <footer className={styles.footer}><div><span className={styles.kicker}>CONTACTO</span><h2>Pablo CF<span>.</span></h2><Instagram className={styles.social}/></div><div className={styles.footerLinks}><a href={bookingHref}>Clases particulares ↗</a><a href={instagram} target="_blank" rel="noopener noreferrer">Colaboraciones / Instagram ↗</a><a href="/profesor">Acceso profesor</a><a href="#inicio">Volver arriba ↑</a></div></footer>
   </main>;
 }
