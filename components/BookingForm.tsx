@@ -69,7 +69,7 @@ export default function BookingForm({
       )
     : "";
 
-  const fieldClassName = "w-full min-w-0 border border-[#cfc9c5] bg-white px-4 py-3 text-sm text-[#141415] outline-none placeholder:text-[#78737a] focus:border-[#78668d] focus:ring-1 focus:ring-[#78668d]";
+  const fieldClassName = "w-full min-w-0 border border-[#cfc9c5] bg-white px-4 py-3 text-base text-[#141415] min-h-[48px] outline-none placeholder:text-[#78737a] focus:border-[#78668d] focus:ring-1 focus:ring-[#78668d]";
   const dates = Array.from(new Set(slots.map(slot => slot.date))).sort();
   const selectedDate = selectedSlot?.date ?? "";
   const daySlots = slots.filter(slot => slot.date === selectedDate);
@@ -84,6 +84,7 @@ export default function BookingForm({
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (isSubmitting) return;
     setError("");
 
     if (!selectedSlot) {
@@ -162,19 +163,19 @@ export default function BookingForm({
         <h2 className="mt-4 text-3xl font-bold tracking-[-0.055em] [font-family:var(--font-space-grotesk)] sm:text-4xl">Tu próxima clase<span className="text-[#b8a6c9]">.</span></h2>
         <p className="mt-3 text-sm leading-relaxed text-[#ddd7df]">Elige un horario disponible y completa tus datos.</p>
       </div>
-      <div className="space-y-8 p-5 sm:p-8">
+      <fieldset disabled={isSubmitting} className="min-w-0 space-y-7 border-0 p-4 sm:space-y-8 sm:p-8">
         <section className="space-y-4">
           <div><p className={stepClass}>01 / Disponibilidad</p><h3 className={headingClass}>Elige fecha y hora</h3></div>
-          <div className="flex gap-2 overflow-x-auto pb-2" role="group" aria-label="Fechas disponibles">
+          <div className="flex max-w-full snap-x gap-2 overflow-x-auto overscroll-x-contain pb-2" role="group" aria-label="Fechas disponibles">
             {dates.map(date => {
               const day = new Date(`${date}T12:00:00`);
-              return <button key={date} type="button" aria-pressed={selectedDate === date} onClick={() => selectDate(date)} className={`min-w-[76px] shrink-0 border px-3 py-3 text-center transition-colors ${selectedDate === date ? "border-[#141415] bg-[#141415] text-white" : "border-[#d7d1cc] bg-[#f5f2ed] hover:border-[#78668d]"}`}><span className="block text-xs capitalize">{format(day,"EEE",{locale:es})}</span><span className="block text-2xl font-semibold">{format(day,"d")}</span><span className="block text-xs capitalize">{format(day,"MMM",{locale:es})}</span></button>;
+              return <button key={date} type="button" aria-pressed={selectedDate === date} onClick={() => selectDate(date)} className={`min-w-[76px] shrink-0 snap-start border px-3 py-3 text-center transition-colors ${selectedDate === date ? "border-[#141415] bg-[#141415] text-white" : "border-[#d7d1cc] bg-[#f5f2ed] hover:border-[#78668d]"}`}><span className="block text-xs capitalize">{format(day,"EEE",{locale:es})}</span><span className="block text-2xl font-semibold">{format(day,"d")}</span><span className="block text-xs capitalize">{format(day,"MMM",{locale:es})}</span></button>;
             })}
           </div>
           <label htmlFor="pcf-date" className={labelClass}>Fecha disponible</label>
           <select id="pcf-date" className={fieldClassName} value={selectedDate} onChange={e => selectDate(e.target.value)} required>{dates.map(date => <option key={date} value={date}>{format(new Date(`${date}T12:00:00`),"EEEE, d 'de' MMMM 'de' yyyy",{locale:es})}</option>)}</select>
           <div role="group" aria-label="Horarios disponibles" className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-            {daySlots.map(slot => <button key={slotValue(slot)} type="button" aria-pressed={selectedSlotValue === slotValue(slot)} onClick={() => setSelectedSlotValue(slotValue(slot))} className={`border px-2 py-3 text-center text-xs font-medium transition-colors ${selectedSlotValue === slotValue(slot) ? "border-[#78668d] bg-[#e8e0ee] text-[#30283c]" : "border-[#d7d1cc] hover:border-[#78668d]"}`}>{slot.start_time.slice(0,5)} – {slot.end_time.slice(0,5)}</button>)}
+            {daySlots.map(slot => <button key={slotValue(slot)} type="button" aria-pressed={selectedSlotValue === slotValue(slot)} onClick={() => setSelectedSlotValue(slotValue(slot))} className={`min-h-[48px] border px-2 py-3 text-center text-sm font-medium transition-colors ${selectedSlotValue === slotValue(slot) ? "border-[#78668d] bg-[#e8e0ee] text-[#30283c]" : "border-[#d7d1cc] hover:border-[#78668d]"}`}>{slot.start_time.slice(0,5)} – {slot.end_time.slice(0,5)}</button>)}
           </div>
           <div aria-live="polite" className="border-l-2 border-[#78668d] bg-[#f5f2ed] px-4 py-3 text-sm"><span className="block text-xs font-medium uppercase tracking-widest text-[#68636b]">Tu horario</span><span className="mt-1 block capitalize">{selectedSlotLabel || "Selecciona un horario"}{selectedSlot ? ` · ${selectedSlot.start_time.slice(0,5)} – ${selectedSlot.end_time.slice(0,5)}` : ""}</span></div>
         </section>
@@ -194,8 +195,8 @@ export default function BookingForm({
           </div>
         </section>
         {error ? <p role="alert" className="border border-[#d9a6a6] bg-[#fdf0f0] p-3 text-sm text-[#8b2e2e]">{error}</p> : null}
-        <div><button type="submit" disabled={isSubmitting || !selectedSlot} className="flex w-full items-center justify-between gap-4 bg-[#141415] px-5 py-4 text-left text-sm font-semibold text-white transition-colors hover:bg-[#423b49] disabled:cursor-not-allowed disabled:opacity-50"><span>{isSubmitting ? "Guardando…" : "Confirmar reserva"}</span><span aria-hidden="true">↗</span></button><p className="mt-3 text-xs leading-relaxed text-[#68636b]">Recibirás los detalles de tu reserva por correo electrónico.</p></div>
-      </div>
+        <div><button type="submit" disabled={isSubmitting || !selectedSlot} className="flex w-full items-center justify-between gap-4 min-h-[52px] bg-[#141415] px-5 py-4 text-left text-base font-semibold text-white transition-colors hover:bg-[#423b49] disabled:cursor-not-allowed disabled:opacity-50"><span>{isSubmitting ? "Guardando…" : "Confirmar reserva"}</span><span aria-hidden="true">↗</span></button><p className="mt-3 text-xs leading-relaxed text-[#68636b]">Recibirás los detalles de tu reserva por correo electrónico.</p></div>
+      </fieldset>
     </form>
   );
 }
