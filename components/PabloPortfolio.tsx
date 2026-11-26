@@ -8,7 +8,7 @@ const instagram = "https://www.instagram.com/pablocf_dancer/";
 const thumb = (id: string, size: number) => `https://drive.google.com/thumbnail?id=${id}&sz=w${size}`;
 
 function Instagram({ className }: { className?: string }) {
-  return <a className={className} href={instagram} target="_blank" rel="noopener noreferrer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg><span>@pablocf_dancer</span><span aria-hidden="true">↗</span></a>;
+  return <a className={className} aria-label="Instagram de Pablo: @pablocf_dancer" href={instagram} target="_blank" rel="noopener noreferrer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg><span>@pablocf_dancer</span><span aria-hidden="true">↗</span></a>;
 }
 
 function Media({ id, eager = false }: { id: string; eager?: boolean }) {
@@ -47,7 +47,7 @@ export default function PabloPortfolio({ bookingHref }: { bookingHref: string })
   const renderClip = (index: number, large = false) => <Clip key={index} index={index} large={large} active={selected === `clip-${index}`} onPlay={() => setSelected(`clip-${index}`)} onClose={close}/>;
   return <main className={styles.site} id="inicio">
     <header className={styles.nav}>
-      <a href="#inicio" className={styles.brand}>PC<span>F.</span></a>
+      <a href="#inicio" className={styles.brand} aria-label="Pablo CF, inicio">PC<span>F.</span></a>
       <nav aria-label="Navegación principal"><a href="#sobre-mi">Pablo</a><a href="#videos">Vídeos</a><a href="#redes">Redes</a><a href="#clases">Clases</a></nav>
       <Instagram className={styles.navSocial}/>
       <a className={styles.navBook} href={bookingHref}>Reserva <span>↗</span></a>
